@@ -1,7 +1,6 @@
-# ionic3-chat
- ionic3 chat example
+# SyncApp
+ An App made by me for me. Nothing big to say.
 
-[DEMO](https://hsuanxyz.github.io/demo/ionic-chat)
 
  ## Origins 
  * Cloned from this repository: `https://github.com/HsuanXyz/ionic3-chat.git`.
