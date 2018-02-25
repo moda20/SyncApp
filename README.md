@@ -11,6 +11,7 @@
  * If you do not install the ionic CLI (`npm install -g ionic`)
  * Run `ionic serve` in a terminal from the project root.
 
+ * The app uses Firebase as Database and Angular fire 2 to communicate with it, check them out before you run this. 
 
  ## File Structure
  ```
