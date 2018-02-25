@@ -3,14 +3,15 @@
 
 [DEMO](https://hsuanxyz.github.io/demo/ionic-chat)
 
+ ## Origins 
+ * Cloned from this repository: `https://github.com/HsuanXyz/ionic3-chat.git`.
+
  ## Running
- * Clone this repository: `https://github.com/HsuanXyz/ionic3-chat.git`.
+ * Clone this repository : https://github.com/moda20/SyncApp.git
  * Run `npm install` from the project root.
  * If you do not install the ionic CLI (`npm install -g ionic`)
  * Run `ionic serve` in a terminal from the project root.
 
- ## App Preview
- <img src="https://github.com/HsuanXyz/hsuanxyz.github.io/blob/master/assets/ionic3-chat/chat.gif?raw=true" alt="Preview">
 
  ## File Structure
  ```
@@ -42,6 +43,8 @@
  │   │   └── emoji-picker.scss
  │   │   └── emoji-picker.ts
  │   ├── providers
+ │   │   └── db-services  
+ │   │       └── db-services.ts               * Everything related to Database ( cached /not cached )
  │   │   └── chat-service.ts                  * chat-service
  │   │   └── emoji.ts                         * emoji-provider
  │   ├── pipes
@@ -64,33 +67,4 @@
  │       └── variables.scss
  ├── tsconfig.json
  └── tslint.json
- ```
-
- ## Environment
- ```
-cli packages: 
-
-    @ionic/cli-utils  : 1.12.0
-    ionic (Ionic CLI) : 3.13.1
-
-global packages:
-
-    Cordova CLI : 7.0.1 
-
-local packages:
-
-    @ionic/app-scripts : 2.1.4
-    Cordova Platforms  : android 6.0.0 browser 4.1.0 ios 4.1.1
-    Ionic Framework    : ionic-angular 3.7.1
-
-System:
-
-    ios-deploy : 1.9.1 
-    ios-sim    : 6.0.0 
-    Node       : v6.9.2
-    npm        : 5.4.2 
-    OS         : macOS Sierra
-    Xcode      : Xcode 9.0 Build version 9A235 
-
-
  ```
