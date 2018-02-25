@@ -1,8 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavParams } from 'ionic-angular';
+import {IonicPage, NavParams, ToastController} from 'ionic-angular';
 import { Events, Content, TextInput } from 'ionic-angular';
 import { ChatService, ChatMessage, UserInfo } from "../../providers/chat-service";
-
+import { AngularFireDatabase } from 'angularfire2/database';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
+import {Clipboard} from "@ionic-native/clipboard";
+import {DbServiceProvider} from '../../providers/db-service/db-service'
+import {Observable} from "rxjs/Observable";
 @IonicPage()
 @Component({
     selector: 'page-chat',
@@ -15,13 +19,23 @@ export class Chat {
     msgList: ChatMessage[] = [];
     user: UserInfo;
     toUser: UserInfo;
-    editorMsg = '';
+  editorMsg = '';
     showEmojiPicker = false;
-
+    items: any;
+    source:any;
+    filupload =[{}];
     constructor(navParams: NavParams,
                 private chatService: ChatService,
-                private events: Events,) {
+                private events: Events,
+                public af: AngularFireDatabase,
+                private iab: InAppBrowser,
+                private clipboard: Clipboard,
+                private Toast:ToastController,
+                private db:DbServiceProvider) {
         // Get the navParams toUserId parameter
+      this.source = localStorage.getItem("dbtype");
+      this.items = this.db.GetListItems('array');
+
         this.toUser = {
             id: navParams.get('toUserId'),
             name: navParams.get('toUserName')
@@ -31,6 +45,20 @@ export class Chat {
         .then((res) => {
             this.user = res
         });
+    }
+
+    UpdateList(){
+      //this.source = localStorage.getItem("dbtype");
+
+      if (localStorage.getItem("dbtype")=="cache"){
+        localStorage.setItem("dbtype","no-cache");
+        this.source = localStorage.getItem("dbtype");
+      }else {
+        localStorage.setItem("dbtype","cache");
+        this.source = localStorage.getItem("dbtype");
+      }
+      this.getMsg();
+
     }
 
     ionViewWillLeave() {
@@ -44,6 +72,7 @@ export class Chat {
 
         // Subscribe to received  new message events
         this.events.subscribe('chat:received', msg => {
+
             this.pushNewMsg(msg);
         })
     }
@@ -69,6 +98,7 @@ export class Chat {
      */
     private getMsg() {
         // Get mock message list
+      this.msgList =[];
         return this.chatService
         .getMsgList()
         .subscribe(res => {
@@ -86,6 +116,7 @@ export class Chat {
         // Mock message
         const id = Date.now().toString();
         let newMsg: ChatMessage = {
+
             messageId: Date.now().toString(),
             userId: this.user.id,
             userName: this.user.name,
@@ -93,23 +124,37 @@ export class Chat {
             toUserId: this.toUser.id,
             time: Date.now(),
             message: this.editorMsg,
-            status: 'pending'
+            status: 'pending',
+            type:"message"
         };
 
-        this.pushNewMsg(newMsg);
-        this.editorMsg = '';
+        let R =this.db.PushItemIntoList(newMsg,this.items).then(
+          data => {
+            newMsg["key"]=data.key;
 
-        if (!this.showEmojiPicker) {
-            this.messageInput.setFocus();
-        }
+            this.editorMsg = '';
 
-        this.chatService.sendMsg(newMsg)
-        .then(() => {
-            let index = this.getMsgIndexById(id);
-            if (index !== -1) {
-                this.msgList[index].status = 'success';
+            if (!this.showEmojiPicker) {
+              this.messageInput.setFocus();
             }
-        })
+
+            this.chatService.sendMsg(newMsg)
+              .then(() => {
+                let index = this.getMsgIndexById(id);
+                if (index !== -1) {
+                  newMsg.status = 'success';
+                  console.log(newMsg);
+                  this.db.UpdateAnItemInList(newMsg,newMsg["key"],this.items).then(
+                    data=>{
+                      //this.pushNewMsg(newMsg);
+                    }
+                  );
+                }
+              })
+          }
+        );
+
+
     }
 
     /**
@@ -117,26 +162,131 @@ export class Chat {
      * @param msg
      */
     pushNewMsg(msg: ChatMessage) {
-        const userId = this.user.id,
-              toUserId = this.toUser.id;
-        // Verify user relationships
-        if (msg.userId === userId && msg.toUserId === toUserId) {
+
+          const userId = this.user.id,
+            toUserId = this.toUser.id;
+          // Verify user relationships
+          if (msg.userId === userId && msg.toUserId === toUserId) {
             this.msgList.push(msg);
-        } else if (msg.toUserId === userId && msg.userId === toUserId) {
+          } else if (msg.toUserId === userId && msg.userId === toUserId) {
             this.msgList.push(msg);
-        }
-        this.scrollToBottom();
+          }
+
+          this.scrollToBottom();
+
     }
 
     getMsgIndexById(id: string) {
         return this.msgList.findIndex(e => e.messageId === id)
     }
+    OpenLink(link,msg){
+      if (msg.type =="message"){
+        const browser = this.iab.create(link);
+        browser.show();
+      }
 
-    scrollToBottom() {
-        setTimeout(() => {
-            if (this.content.scrollToBottom) {
-                this.content.scrollToBottom();
-            }
-        }, 400)
+
     }
+  tapEvent(Text){
+    this.clipboard.copy(Text);
+    let toas =this.Toast.create({
+      message:"TextCopied to clipboard",
+      duration:1100
+    });
+    toas.present().then();
+
+  }
+  scrollToBottom() {
+    setTimeout(() => {
+      if (this.content.scrollToBottom) {
+        this.content.scrollToBottom();
+      }
+    }, 400)
+
+  }
+
+  uploadfile(event){
+      console.log(event.target.files[0]);
+
+      let task =this.db.uploadfile(event.target.files[0]);
+      let X ={
+        Percentage :task.percentageChanges(),
+        DownloadUrl:task.downloadURL()
+      }
+          this.filupload.push(X);
+          X["index"]=this.filupload.length-1;
+          this.filupload[this.filupload.length-1]["index"]=this.filupload.length-1;
+          const id = Date.now().toString();
+          let newMsg: ChatMessage = {
+
+            messageId: id,
+            userId: this.user.id,
+            userName: this.user.name,
+            userAvatar: this.user.avatar,
+            toUserId: this.toUser.id,
+            time: Date.now(),
+            message: "Uploading : "+event.target.files[0].name,
+            status: 'pending',
+            type:"file"
+          };
+
+
+    let R =this.db.PushItemIntoList(newMsg,this.items).then(
+      data => {
+
+        newMsg["key"]=data.key;
+
+        this.editorMsg = '';
+
+        if (!this.showEmojiPicker) {
+          this.messageInput.setFocus();
+        }
+
+        this.chatService.sendMsg(newMsg)
+          .then(() => {
+            let index = this.getMsgIndexById(id);
+            if (index !== -1) {
+              this.filupload[X["index"]]['Percentage'].subscribe(
+                res =>{
+                  console.log(res);
+                  if (res == 100){
+                    this.filupload[X["index"]]['DownloadUrl'].subscribe(
+                      url=>{
+                        var finalId = Date.now().toString();
+                        let finalMsg: ChatMessage = {
+
+                          messageId: finalId,
+                          userId: this.user.id,
+                          userName: this.user.name,
+                          userAvatar: this.user.avatar,
+                          toUserId: this.toUser.id,
+                          time: Date.now(),
+                          message: url,
+                          status: 'success',
+                          type:"message"
+                        };
+
+                        finalMsg["key"]=data.key;
+                        finalMsg.status = 'success';
+                        console.log(finalMsg);
+                        this.db.UpdateAnItemInList(finalMsg,finalMsg["key"],this.items).then(
+                          data=>{
+                            //this.pushNewMsg(newMsg);
+                          }
+                        );
+                      }
+                    )
+                  }
+
+
+                }
+
+              )
+
+            }
+          })
+      }
+    );
+
+  }
 }

@@ -14,3 +14,25 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+@import "../pages/home/home";
+$loading-md-padding-top :0px;
+$loading-md-max-width : 100%;
+
+
+.itemTop, .itemTop.item-md.item-block .item-inner{
+background-color : transparent;
+
+    border-bottom: none;
+
+}
+.card-md{
+  background: none;
+  border:none;
+  -webkit-box-shadow: none ;
+  -moz-box-shadow: none;
+  box-shadow: none ;
+}
+
+ion-label{
+  overflow: visible;
+}

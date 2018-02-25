@@ -1,11 +1,22 @@
-<ion-header>
-  <ion-navbar>
+<ion-header no-border>
+  <ion-navbar color="Redish">
     <ion-title>
       About
     </ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content >
+  <ion-list [virtualScroll]="CryptoKeys" approxItemHeight="40px">
 
+    <ion-item *virtualItem="let item" (click)="ToDetails(CryptoList[item])">
+      <ion-avatar item-start>
+        <img src="https://www.cryptocompare.com{{CryptoList[item].ImageUrl}}">
+      </ion-avatar>
+      <ion-label >
+        {{CryptoList[item].FullName}}
+      </ion-label>
+    </ion-item>
+
+  </ion-list>
 </ion-content>

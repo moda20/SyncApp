@@ -24,6 +24,18 @@
         },
         "ionic-plugin-keyboard": {
             "PACKAGE_NAME": "com.ionicframework.chat957043"
+        },
+        "cordova-plugin-inappbrowser": {
+            "PACKAGE_NAME": "com.ionicframework.chat957043"
+        },
+        "cordova-clipboard": {
+            "PACKAGE_NAME": "com.ionicframework.chat957043"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.ionicframework.SyncApp"
+        },
+        "cordova-plugin-filepath": {
+            "PACKAGE_NAME": "com.ionicframework.SyncApp"
         }
     },
     "dependent_plugins": {}

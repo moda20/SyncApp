@@ -1,3 +1,34 @@
 page-about {
 
 }
+
+CoinAbout{
+  ion-label{
+    font-size: 1.27rem!important;
+    font-weight: 900;
+    text-wrap: normal;
+    white-space: normal;
+  }
+  .LoadingItem{
+    background-color : rgba(0,0,0,0.05) !important;
+    z-index: 100000;
+    width:100%;
+    height: 100%;
+    top:0;
+    left: 0;
+    position: absolute;
+  }
+  .LoadingItemImg{
+    //position: relative;
+    margin-right: 50%;
+    margin-left: 50%;
+    margin-top:13%;
+    display: block;
+    max-width: 100%!important;
+    height: auto!important;
+    width: auto!important;
+  }
+  ion-item h2 {
+    color: color($colors, Redish) !important;
+  }
+}
