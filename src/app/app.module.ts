@@ -34,11 +34,11 @@ import { Dialogs } from '@ionic-native/dialogs';
 import { HTTP } from '@ionic-native/http';
 import {CoinHistoricPricePageModule} from "../pages/coin-historic-price/coin-historic-price.module";
 export const firebaseConfig = {
-  apiKey: "AIzaSyByhmYwwAFlmKoEB8OBVoUeLh3hQOJ3rfk",
-  authDomain: "syncapp-a4591.firebaseapp.com",
-  databaseURL: "https://syncapp-a4591.firebaseio.com/",
-  storageBucket: "gs://syncapp-a4591.appspot.com/",
-  messagingSenderId: "10931153584"
+  apiKey: "",
+  authDomain: "",
+  databaseURL: "",
+  storageBucket: "",
+  messagingSenderId: ""
 };
 
 @NgModule({
