@@ -1,11 +1,15 @@
 import {Component, ViewChild} from '@angular/core';
-import {Content, IonicPage, LoadingController, ModalController} from 'ionic-angular';
-import * as BTCC from 'btc-china'
+import {Content, IonicPage, LoadingController, ModalController, NavController} from 'ionic-angular';
+
 import { HttpClient } from '@angular/common/http';
 import {map} from "rxjs/operators";
 import {Observable} from "rxjs/Observable";
 import {DbServiceProvider} from "../../providers/db-service/db-service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {ChatModule} from "../chat/chat.module";
+import {Chat} from "../chat/chat";
+import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
+import {CoinHistoricPricePage} from "../coin-historic-price/coin-historic-price";
 @IonicPage()
 @Component({
   selector: 'page-home',
@@ -32,12 +36,19 @@ export class HomePage {
   BTCValue :any;
   SpinnerStatus :any;
   splash = true;
+  ETHValue:any;
+  STELLARLUMENS:any;
+  ETHCValue:any;
+  BCHValue:any;
   BTCLINK : "https://spotusd-data.btcc.com/data/pro/ticker?symbol=BTCUSD";
+  ETHLink;
   Animations ={btcvalue :false};
   tabBarElement: any;
   constructor(private http:HttpClient,
               private modalC:ModalController,
-              private LoadingC:LoadingController
+              private LoadingC:LoadingController,
+              private NevController:NavController,
+              private nativePageTransitions: NativePageTransitions
               ) {
 
 
@@ -50,8 +61,38 @@ export class HomePage {
    // this.tabBarElement = document.querySelector('.tabbar');
 
   }
-
-
+  GotoBTCPrice (){
+    let options: NativeTransitionOptions = {
+      direction: 'left',
+      duration: 250,
+      slowdownfactor: 1,
+      slidePixels: 0,
+      iosdelay: 100,
+      androiddelay: 50,
+      fixedPixelsTop: 0,
+      fixedPixelsBottom: 0
+    };
+    this.nativePageTransitions.slide(options)
+      .then(dt=>{console.log(dt)})
+      .catch(err=>{console.log(err)});
+    this.NevController.push(CoinHistoricPricePage,this.toUser);
+  }
+  GoToChat(){
+    let options: NativeTransitionOptions = {
+      direction: 'left',
+      duration: 250,
+      slowdownfactor: 1,
+      slidePixels: 0,
+      iosdelay: 100,
+      androiddelay: 50,
+      fixedPixelsTop: 0,
+      fixedPixelsBottom: 0
+    };
+    this.nativePageTransitions.slide(options)
+      .then(dt=>{console.log(dt)})
+      .catch(err=>{console.log(err)});
+    this.NevController.push(Chat,this.toUser);
+  }
   // Refreshes the value of BTC -> USD
   RefreshBTC(){
     this.SpinnerStatus = null;
@@ -71,8 +112,27 @@ export class HomePage {
             this.BTCValue = res;
             this.SpinnerStatus = true;
             this.Animations.btcvalue=true;
-          },2500);
+          },50);
       } );
+
+    this.http.get<any>("https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD")
+      .subscribe(res=>{
+        this.ETHValue= res.USD;
+      })
+    this.http.get<any>("https://min-api.cryptocompare.com/data/price?fsym=XLM&tsyms=USD")
+      .subscribe(res=>{
+        setTimeout(()=>{
+          this.STELLARLUMENS= res.USD
+        },50);
+      })
+    this.http.get<any>("https://min-api.cryptocompare.com/data/price?fsym=ETC&tsyms=USD")
+      .subscribe(res=>{
+        this.ETHCValue= res.USD;
+      })
+    this.http.get<any>("https://min-api.cryptocompare.com/data/price?fsym=BCH&tsyms=USD")
+      .subscribe(res=>{
+        this.BCHValue= res.USD;
+      })
   }
 
 
@@ -156,13 +216,14 @@ export class CurrencyModal{
     let loader = this.LoadingC.create(
       {
         spinner: 'hide',
-        content: `<img src="./assets/MELOADERl.gif" />`,
+        content: `<div></div>`,
+        cssClass:"loading",
         showBackdrop:false
       }
     );
     loader.present().then(()=>{
       this.http.get<any>("https://min-api.cryptocompare.com/data/pricemulti?fsyms="+this.CompareList.toString()+"&tsyms="+this.ToList.toString())
-        .subscribe(res=>{
+        .toPromise().then(res=>{
           if (res["Response"]!="Error"){
             this.Results=res ;
             console.log(this.Results);
@@ -181,7 +242,11 @@ export class CurrencyModal{
             console.log("error");
             loader.dismissAll();
           }
-        })
+        }).catch(
+          err=>{
+            loader.dismissAll();
+          }
+      )
     })
 
   }

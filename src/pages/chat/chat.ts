@@ -7,6 +7,10 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 import {Clipboard} from "@ionic-native/clipboard";
 import {DbServiceProvider} from '../../providers/db-service/db-service'
 import {Observable} from "rxjs/Observable";
+import { Toast } from '@ionic-native/toast';
+import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions';
+declare var cordova;
+
 @IonicPage()
 @Component({
     selector: 'page-chat',
@@ -23,6 +27,7 @@ export class Chat {
     showEmojiPicker = false;
     items: any;
     source:any;
+  gettingMessages=false;
     filupload =[{}];
     constructor(navParams: NavParams,
                 private chatService: ChatService,
@@ -31,7 +36,9 @@ export class Chat {
                 private iab: InAppBrowser,
                 private clipboard: Clipboard,
                 private Toast:ToastController,
-                private db:DbServiceProvider) {
+                private db:DbServiceProvider,
+                private toast: Toast,
+                private nativePageTransitions:NativePageTransitions) {
         // Get the navParams toUserId parameter
       this.source = localStorage.getItem("dbtype");
       this.items = this.db.GetListItems('array');
@@ -64,6 +71,19 @@ export class Chat {
     ionViewWillLeave() {
         // unsubscribe
         this.events.unsubscribe('chat:received');
+      let options: NativeTransitionOptions = {
+        direction: 'right',
+        duration: 190,
+        slowdownfactor: 1,
+        slidePixels: 0,
+        iosdelay: 100,
+        androiddelay: 50,
+        fixedPixelsTop: 0,
+        fixedPixelsBottom: 0
+      };
+      this.nativePageTransitions.slide(options)
+        .then(dt=>{console.log(dt)})
+        .catch(err=>{console.log(err)});
     }
 
     ionViewDidEnter() {
@@ -98,11 +118,13 @@ export class Chat {
      */
     private getMsg() {
         // Get mock message list
+      this.gettingMessages=true;
       this.msgList =[];
         return this.chatService
         .getMsgList()
         .subscribe(res => {
             this.msgList = res;
+          this.gettingMessages=false;
             this.scrollToBottom();
         });
     }
@@ -188,12 +210,24 @@ export class Chat {
 
     }
   tapEvent(Text){
-    this.clipboard.copy(Text);
-    let toas =this.Toast.create({
+    this.clipboard.copy(Text).then(
+      data=>{
+        console.log(data)
+/*        this.toast.show("TextCopied to clipboard", '1100', 'bottom').subscribe(
+          toast => {
+            console.log(toast);
+          }
+        );*/
+/*console.log(cordova.plugins);*/
+        cordova.plugins.snackbar.create("TextCopied to clipboard", 'SHORT');
+      }
+    );
+/*    let toas =this.Toast.create({
       message:"TextCopied to clipboard",
       duration:1100
     });
-    toas.present().then();
+    toas.present().then();*/
+
 
   }
   scrollToBottom() {

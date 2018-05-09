@@ -1,0 +1,42 @@
+<ion-header no-border>
+  <ion-navbar color="Redish">
+    <ion-title>About {{Coin.name}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+
+
+<ion-content>
+  <ion-card>
+
+    <canvas #PriceCanvas></canvas>
+<!--    <ion-fab right top>
+      <button ion-fab>
+        <ion-icon name="pin"></ion-icon>
+      </button>
+    </ion-fab>-->
+
+    <ion-item>
+      <ion-icon name="money" item-start large></ion-icon>
+      <h2>Bitcoin Price</h2>
+      <p>A whole Month of prices</p>
+    </ion-item>
+
+    <ion-item>
+      <ion-icon name="wine" item-left large ></ion-icon>
+      <h2>Institute of Fine Cocktails</h2>
+      <p>14 S. Hop Avenue, Madison, WI 53703</p>
+    </ion-item>
+
+    <ion-item>
+      <span item-left>18 min</span>
+      <span item-left>(2.6 mi)</span>
+      <button ion-button icon-left clear item-end (click)="GotoCoindesk()">
+        <ion-icon name="globe"></ion-icon>
+        See on Coin Desk
+      </button>
+    </ion-item>
+
+  </ion-card>
+</ion-content>

@@ -18,6 +18,8 @@ page-chat {
   }
 
   .input-wrap {
+    font-family: 'Lato',Roboto,sans-serif !important;
+    font-weight: 600;
     padding: 0 5px;
     ion-textarea {
       position: static;
@@ -65,12 +67,16 @@ page-chat {
         }
 
         .msg-content {
+          font-family: 'Lato',Roboto,sans-serif !important;
+          font-weight: 600;
           position: relative;
           margin-top: 5px;
           border-radius: 5px;
           padding: 8px;
-          border: 1px solid #ddd;
-          color: #fff;
+          border-top: 1px solid #c60808;
+          border-left: 23px solid #c60808;
+          border-bottom: 25px solid transparent;
+          color: #222222;
           width: auto;
           max-width: 80%;
           span.triangle {
@@ -94,8 +100,12 @@ page-chat {
 
     .message.left {
       .msg-content {
-        background-color: $toUserBackgroundColor;
+        background-color: transparent /*$toUserBackgroundColor*/;
         float: left;
+        border-top: 1px solid #c60808;
+        border-right: 23px solid #c60808;
+        border-bottom: 25px solid transparent;
+        border-left: none;
       }
       .msg-detail {
         padding-left: 60px;
@@ -130,7 +140,7 @@ page-chat {
         top: 50px;
       }
       .msg-content {
-        background-color: $userBackgroundColor;
+        background-color: transparent /*$userBackgroundColor*/;
         float: right;
         span.triangle {
           background-color: $userBackgroundColor;

@@ -10,25 +10,60 @@
 
   <ion-list>
 
-    <ion-item navPush="Chat"
-              [navParams]="toUser">
+    <ion-item (click)="GoToChat()">
       <ion-avatar item-left>
         <img src="./assets/to-user.jpg">
       </ion-avatar>
       <h2>Hancock</h2>
       <p>If at first you don’t succeed, call it version 1.0</p>
     </ion-item>
-    <ion-item >
-      <div class="LoadingItem" [@slideInOut]="BTCValue?'out':'in'">
-        <img src="./assets/MELOADERl.gif" class="LoadingItemImg" >
-      </div>
-      <ion-avatar  item-left>
-        <img src="./assets/btc.png">
+    <ion-item (click)="GotoBTCPrice()" >
+      <ion-avatar item-left>
+        <img src="./assets/btc.png" >
       </ion-avatar>
-      <h2 *ngIf="BTCValue">BTC => {{BTCValue.ticker.High}} USD</h2>
-      <p *ngIf="BTCValue" >Refreshed on : {{BTCValue.ticker.Timestamp | date: 'dd/MM/yyyy'}} | {{BTCValue.ticker.Timestamp | relativeTime}}</p>
+      <div class ="{{!BTCValue?'loading':''}}">
+        <h2 *ngIf="BTCValue">BTC => {{BTCValue.ticker.High}} USD</h2>
+        <p *ngIf="BTCValue" >Refreshed on : {{BTCValue.ticker.Timestamp | date: 'dd/MM/yyyy'}} | {{BTCValue.ticker.Timestamp | relativeTime}}</p>
 
+
+      </div>
       <ion-spinner *ngIf="BTCValue" name="ios" (click)="RefreshBTC()" item-end [paused]="SpinnerStatus"></ion-spinner>
+    </ion-item>
+    <ion-item  >
+      <ion-avatar   item-left>
+        <img src="./assets/ETHL.png" >
+      </ion-avatar>
+      <div class ="{{!ETHValue?'loading':''}}">
+        <h2 *ngIf="ETHValue">ETH => {{ETHValue}} USD</h2>
+      </div>
+    </ion-item>
+    <ion-item >
+      <ion-avatar  item-left >
+        <img src="./assets/stellar.png" >
+      </ion-avatar>
+      <div class ="{{!STELLARLUMENS?'loading':''}}">
+        <h2 *ngIf="STELLARLUMENS">XLM => {{STELLARLUMENS}} USD</h2>
+        <p *ngIf="STELLARLUMENS" >XLM => (Stellar Lumens) </p>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-avatar item-left>
+        <img src="./assets/ETHCLASSIC.png" >
+      </ion-avatar>
+      <div class ="{{!ETHCValue?'loading':''}}">
+        <h2 *ngIf="ETHCValue">ETC => {{ETHCValue}} USD</h2>
+        <p *ngIf="ETHCValue" >ETC => (Ethereum Classic) </p>
+      </div>
+    </ion-item>
+    <ion-item >
+
+      <ion-avatar  item-left>
+        <img src="./assets/BCH.png" >
+      </ion-avatar>
+      <div class ="{{!BCHValue?'loading':''}}">
+        <h2 *ngIf="BCHValue">BCH => {{BCHValue}} USD</h2>
+        <p *ngIf="BCHValue" >BCH => (Bitcoin Cash) </p>
+      </div>
     </ion-item>
 <!--    <ion-item *ngIf="!BTCValue" class="LoadingItem" [@slideInOut]="BTCValue?'out':'in'">
 

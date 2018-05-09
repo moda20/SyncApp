@@ -1,9 +1,19 @@
 <ion-header no-border>
-  <ion-navbar color="Redish">
-    <ion-title>
-      About
-    </ion-title>
-  </ion-navbar>
+  <ion-toolbar color="Redish">
+    <ion-navbar >
+      <ion-title>
+        About
+      </ion-title>
+    </ion-navbar>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="Refresh()">
+        <ion-icon name="information-circle"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-searchbar item-right="" (ionInput)="getItems($event)"></ion-searchbar>
+
 </ion-header>
 
 <ion-content >

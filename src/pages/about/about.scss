@@ -1,6 +1,14 @@
 page-about {
-
+ .feImage{
+  height: 60px !important;
+   width: 60px !important;
+ }
+  .feImage > img{
+    height: 60px !important;
+    width: 60px !important;
+  }
 }
+
 
 CoinAbout{
   ion-label{

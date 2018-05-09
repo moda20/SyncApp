@@ -11,7 +11,7 @@ import {SplashComponent} from "../../components/splash/splash";
 
 
 @NgModule({
-    declarations: [HomePage,CurrencyModal,SplashComponent],
+    declarations: [HomePage,CurrencyModal],
     imports: [
         IonicPageModule.forChild(HomePage),
         SharedPipesModule,

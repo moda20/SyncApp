@@ -1,5 +1,5 @@
 import {NgModule, ErrorHandler, enableProdMode} from '@angular/core';
-import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
+import {IonicApp, IonicModule, IonicErrorHandler} from 'ionic-angular';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { MyApp } from './app.component';
@@ -26,7 +26,13 @@ import {ChatModule} from "../pages/chat/chat.module";
 import {AboutPageModule} from "../pages/about/about.module";
 import {CoinAboutComponent} from "../pages/about/about";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-
+import {Toast} from "@ionic-native/toast";
+import { NativePageTransitions} from '@ionic-native/native-page-transitions';
+import { BackgroundMode } from '@ionic-native/background-mode';
+import { BackgroundGeolocation} from '@ionic-native/background-geolocation';
+import { Dialogs } from '@ionic-native/dialogs';
+import { HTTP } from '@ionic-native/http';
+import {CoinHistoricPricePageModule} from "../pages/coin-historic-price/coin-historic-price.module";
 export const firebaseConfig = {
   apiKey: "AIzaSyByhmYwwAFlmKoEB8OBVoUeLh3hQOJ3rfk",
   authDomain: "syncapp-a4591.firebaseapp.com",
@@ -56,7 +62,8 @@ export const firebaseConfig = {
     ChatModule,
     AboutPageModule,
     BrowserAnimationsModule,
-    AngularFireStorageModule
+    AngularFireStorageModule,
+    CoinHistoricPricePageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -74,7 +81,14 @@ export const firebaseConfig = {
     Clipboard,
     DbServiceProvider,
     File,
-    FilePath
+    FilePath,
+    Toast,
+    NativePageTransitions,
+    BackgroundMode,
+    BackgroundGeolocation,
+    Dialogs,
+    HTTP
+
 ]
 })
 

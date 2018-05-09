@@ -11,6 +11,7 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 export class AboutPage {
     CryptoList;
     CryptoKeys=[];
+    origin;
     Ready:any;
     constructor(private http:HttpClient,
                 private LoadingC:LoadingController,
@@ -22,27 +23,46 @@ export class AboutPage {
 
 
     ionViewDidLoad(){
+    this.Refresh()
+
+    }
+
+    Refresh(){
       let Loader = this.LoadingC.create(      {
         spinner: 'hide',
-        content: `<img src="./assets/MELOADERl.gif" />`,
+        content: `<div></div>`,
+        cssClass:"loading",
         showBackdrop:false
       });
 
       Loader.present().then(
         ()=>{
           this.http.get<any>("https://www.cryptocompare.com/api/data/coinlist/")
-            .subscribe(res => {this.CryptoList =res.Data; this.CryptoKeys=Object.keys(res.Data); this.Ready=true; console.log(this.CryptoList); Loader.dismissAll()},
+            .toPromise().then(res => {this.CryptoList =res.Data;
+
+                this.CryptoKeys=Object.keys(res.Data); this.CryptoKeys.sort(); this.origin=this.CryptoKeys; this.Ready=true; console.log(this.CryptoList); Loader.dismissAll()},
               error2 =>{Loader.dismiss()})
 
 
         }
       )
-
     }
 
     ToDetails(Item){
       this.navC.push(CoinAboutComponent,Item,{animation:"ios-transition"}).then();
     }
+
+  getItems(ev){
+      this.CryptoKeys=this.origin;
+    var val = ev.target.value;
+
+    // if the value is an empty string don't filter the items
+    if (val && val.trim() != '') {
+      this.CryptoKeys = this.CryptoKeys.filter((item) => {
+        return (this.CryptoList[item].FullName.includes(val));
+      })
+    }
+  }
 }
 @Component({
   selector: 'CoinAbout',
@@ -79,10 +99,8 @@ export class AboutPage {
           </ion-item>
         </ion-card-content>
         <button ion-button color="primary" (click)="CoinOverView(Item.Url)" full>Review on CryptoCompare</button>
-        <div style="position:relative;">
-          <div class="LoadingItem" [@slideInOut]="SocialData?'out':'in'">
-            <img src="./assets/MELOADERl.gif" class="LoadingItemImg" >
-          </div>
+        <div class="{{!SocialData?'loading':''}}">
+          
           <ion-item  (click)="SocialData?GoToLink(SocialData.Facebook.link):null">
             <ion-icon item-start name="logo-facebook" color="Facebook"></ion-icon>
             <h2>
@@ -165,7 +183,7 @@ export class CoinAboutComponent{
       .subscribe(res=>{
         setTimeout(()=>{
           this.SocialData = res.Data;
-        },800)
+        },50)
       })
   }
 }
